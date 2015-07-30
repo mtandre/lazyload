@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en-us">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+        <title>lazyload image example</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <style>
+        img {
+          display: block;
+          height: 500px;
+          width: auto;
+          margin: 10px auto;
+        }
+        </style>
+    </head>
+    <body>
+      <img src="blank.png" data-src="https://placehold.it/50x50">
+      <img src="blank.png" data-src="https://placehold.it/100x100">
+      <img src="blank.png" data-src="https://placehold.it/150x150">
+      <img src="blank.png" data-src="https://placehold.it/200x200">
+      <img src="blank.png" data-src="https://placehold.it/250x250">
+      <img src="blank.png" data-src="https://placehold.it/300x300">
+      <img src="blank.png" data-src="https://placehold.it/350x350">
+    <script src="ll.js"></script>
+    <script>
+    ll.init();
+    </script>
+    </body>
+</html>
