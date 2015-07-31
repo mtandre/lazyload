@@ -1,4 +1,4 @@
-var ll = (function (window) {
+var ll = (function () {
 
   'use strict';
 
@@ -20,39 +20,43 @@ var ll = (function (window) {
     return (box.top <= view);
   };
 
-  var throttle = function() {
-    var result;
+  var throttle = function(func, wait) {
+    var context, args, result;
     var timeout = null;
     var previous = 0;
     var later = function() {
       previous = new Date().getTime();
       timeout = null;
-      result = ll.render();
+      result = func.apply(context, args);
+      if (!timeout) context = args = null;
     };
     return function() {
-      var now = new Date().getTime();
-      var remaining = delay - (now - previous);
-      if (remaining <= 0 || remaining > delay) {
-          if (timeout) {
-              clearTimeout(timeout);
-              timeout = null;
-          }
-          previous = now;
-          result = ll.render();
-      } else if (!timeout) {
-         timeout = setTimeout(later, remaining);
-      }
-      return result;
+        var now = new Date().getTime();
+        var remaining = wait - (now - previous);
+        context = this;
+        args = arguments;
+        if (remaining <= 0 || remaining > wait) {
+            if (timeout) {
+                clearTimeout(timeout);
+                timeout = null;
+            }
+            previous = now;
+            result = func.apply(context, args);
+            if (!timeout) context = args = null;
+        } else if (!timeout) {
+           timeout = setTimeout(later, remaining);
+        }
+        return result;
     };
   }
 
   ll.init = function () {
-    offset = (root.innerHeight || document.documentElement.clientHeight);
-    delay = 200;
+    offset = 300;
+    delay = 300;
     ll.render();
     if (document.addEventListener) {
-      root.addEventListener('scroll', throttle, false);
-      root.addEventListener('load', throttle, false);
+      root.addEventListener('scroll', throttle(ll.render,delay), false);
+      root.addEventListener('load', throttle(ll.render,delay), false);
     } else {
       root.attachEvent('onscroll', throttle);
       root.attachEvent('onload', throttle);
@@ -64,11 +68,9 @@ var ll = (function (window) {
     var length = nodes.length;
     var src, elem;
     var view = (root.innerHeight || document.documentElement.clientHeight) + offset;
-    console.log("view: %o", view);
     for (var i = 0; i < length; i++) {
       elem = nodes[i];
       if (inView(elem, view)) {
-        console.log("true - elem: %o", elem);
         elem.src = elem.getAttribute('data-src');
         elem.removeAttribute('data-src');
       }
@@ -89,4 +91,4 @@ var ll = (function (window) {
 
   return ll;
 
-}(window));
+}());
